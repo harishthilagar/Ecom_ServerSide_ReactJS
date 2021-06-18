@@ -3,10 +3,10 @@ const router = express.Router()
 const Buyer = require('../models/Buyer')
 
 router.post('/user', (request, response) => {
-    Buyer.create(request.body).then(() => {
+    Buyer.create(request.body).then((res) => {
         response.sendStatus(200)
-    }).catch(() => {
-        response.sendStatus(401)
+    }).catch((err) => {
+        response.sendStatus(405)
     })
 })
 
@@ -34,12 +34,13 @@ router.post('/user/signin',(req,res)=>{
 })
 
 router.delete('/user',(request,response)=>{
-    Buyer.deleteOne(request.body).then((res)=>{
-        if(res.deletedCount===0){
-            response.send({"user":true})
+    console.log(request.body);
+    Buyer.findOneAndDelete(request.body).then((res)=>{
+        if(res===null){
+            response.send({"user":false})
         }
         else{
-            response.send({"user":false})
+            response.send({"user":true})
         }
     }).catch((err)=>{
         console.log(err);
